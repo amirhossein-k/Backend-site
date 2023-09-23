@@ -1,7 +1,7 @@
 const createError = require("http-errors");
 const JWT = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const { UserModel } = require("../app/models/user");
+const {UserModel} = require("../app/models/user");
 const mongoose = require("mongoose");
 const moment = require("moment-jalali");
 const crypto = require("crypto");
@@ -96,7 +96,7 @@ function verifyRefreshToken(req) {
         try {
           if (err)
             reject(createError.Unauthorized("لطفا حساب کاربری خود شوید"));
-          const { _id } = payload;
+          const {_id} = payload;
           const user = await UserModel.findById(_id, {
             password: 0,
             otp: 0,
@@ -115,10 +115,10 @@ function verifyRefreshToken(req) {
 async function getUserCartDetail(userId) {
   const cartDetail = await UserModel.aggregate([
     {
-      $match: { _id: userId },
+      $match: {_id: userId},
     },
     {
-      $project: { cart: 1, name: 1 },
+      $project: {cart: 1, name: 1},
     },
     {
       $lookup: {
@@ -139,7 +139,7 @@ async function getUserCartDetail(userId) {
     {
       $project: {
         name: 1,
-        coupon: { $arrayElemAt: ["$coupon", 0] },
+        coupon: {$arrayElemAt: ["$coupon", 0]},
         cart: 1,
         productDetail: {
           _id: 1,
@@ -184,7 +184,7 @@ async function getUserCartDetail(userId) {
           $function: {
             body: function discountDetail(productDetail, coupon) {
               if (!coupon)
-                return { newProductDetail: productDetail, coupon: null };
+                return {newProductDetail: productDetail, coupon: null};
               const isExpiredCoupon =
                 coupon.expireDate &&
                 new Date(coupon.expireDate).getTime() < Date.now();
@@ -215,7 +215,7 @@ async function getUserCartDetail(userId) {
 
               return {
                 newProductDetail,
-                coupon: { code: coupon.code, _id: coupon._id },
+                coupon: {code: coupon.code, _id: coupon._id},
               };
             },
             args: ["$productDetail", "$coupon"],
@@ -303,7 +303,7 @@ function deleteInvalidPropertyInObject(data = {}, blackListFields = []) {
   });
 }
 async function checkProductExist(id) {
-  const { ProductModel } = require("../app/models/product");
+  const {ProductModel} = require("../app/models/product");
   if (!mongoose.isValidObjectId(id))
     throw createError.BadRequest("شناسه محصول ارسال شده صحیح نمیباشد");
   const product = await ProductModel.findById(id);
