@@ -6,7 +6,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const createError = require("http-errors");
 const path = require("path");
-const { allRoutes } = require("./router/router");
+const {allRoutes} = require("./router/router");
 dotenv.config();
 class Application {
   #app = express();
@@ -31,18 +31,17 @@ class Application {
       .connect(process.env.APP_DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-      
       })
       .then((res) => console.log("MongoDB connected!!"))
       .catch((err) => console.log("Failed to connect to MongoDB", err));
   }
-  
+
   configServer() {
     this.#app.use(
-      cors({ credentials: true, origin: process.env.ALLOW_CORS_ORIGIN })
+      cors({credentials: true, origin: process.env.ALLOW_CORS_ORIGIN})
     );
     this.#app.use(express.json());
-    this.#app.use(express.urlencoded({ extended: true }));
+    this.#app.use(express.urlencoded({extended: true}));
     this.#app.use(express.static(path.join(__dirname, "..")));
   }
   initClientSession() {
@@ -51,6 +50,7 @@ class Application {
   configRoutes() {
     this.#app.use("/api", allRoutes);
   }
+
   errorHandling() {
     this.#app.use((req, res, next) => {
       next(createError.NotFound("آدرس مورد نظر یافت نشد"));
